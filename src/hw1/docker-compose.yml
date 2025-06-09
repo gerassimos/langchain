@@ -1,0 +1,13 @@
+
+services:
+  ollama:
+    image: ollama/ollama:0.3.2-rocm
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama 
+
+# define a volume section at the end of the file
+volumes:
+  ollama:
