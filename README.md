@@ -174,14 +174,16 @@ the name of the file or some other details about where this document actually ca
 ## -----------------------------------------------------------
 
 ## 46. Important Pipenv Environment Setup Information
-- [slides](diagrams/09-agents.pdf)
+
 ## 47. App Overview
+- [slides](diagrams/09-agents.pdf)
+- 
+## 48. Understanding Tools
 - [slides](diagrams/09-agents.pdf)
 - So I'm gonna say that there's kind of like a `function` named run_query.
 - [img](diagrams/img/l48-00.png)
-
-
-## 48. Understanding Tools
+- [img](diagrams/img/l48-01.png)
+-
 
 ## 49. Understanding ChatGPT Functions
 
