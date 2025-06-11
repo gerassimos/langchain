@@ -181,11 +181,16 @@ the name of the file or some other details about where this document actually ca
 ## 48. Understanding Tools
 - [slides](diagrams/09-agents.pdf)
 - So I'm gonna say that there's kind of like a `function` named run_query.
-- [img](diagrams/img/l48-00.png)
-- [img](diagrams/img/l48-01.png)
+- ![img](diagrams/img/l48-00.png)
+- ![img](diagrams/img/l48-01.png)
 -
 
 ## 49. Understanding ChatGPT Functions
+Now, this entire technique works not only with ChatGPT, but with just about any language model.
+*But to use other LLM models we need to use the plain text approach*
+So we can add in that initial little bit right there to our initial prompt that we send off to a language model,
+and a language model is gonna try to use those tools. It works particularly well with completion-based models.
+
 
 ## 50. SQLite Database Download
 
