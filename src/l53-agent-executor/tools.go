@@ -6,6 +6,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/tmc/langchaingo/callbacks"
 	"github.com/tmc/langchaingo/tools"
+	"strings"
 )
 
 // RunSQLiteQuery executes a given SQLite query and returns the results.
@@ -90,7 +91,9 @@ func (c RunSqliteQuery) Call(ctx context.Context, input string) (string, error) 
 		if c.CallbacksHandler != nil {
 			c.CallbacksHandler.HandleToolError(ctx, err)
 		}
-		return fmt.Sprintf("error from evaluator: %s", err.Error()), nil //nolint:nilerr
+		//return fmt.Sprintf("error from run_sqlite_query: %s", err.Error()), nil //nolint:nilerr
+		// wrap the error in a more descriptive message and return it
+		return "", fmt.Errorf("error running RunSQLiteQuery with input \"%s\": %w", input, err)
 	}
 	//log result
 	fmt.Printf("SQLite query result: %s\n", result)
@@ -98,6 +101,8 @@ func (c RunSqliteQuery) Call(ctx context.Context, input string) (string, error) 
 	if c.CallbacksHandler != nil {
 		c.CallbacksHandler.HandleToolEnd(ctx, result)
 	}
+	// trim result to remove trailing newlines and tabs
+	result = strings.TrimSpace(result)
 
 	return result, nil
 }

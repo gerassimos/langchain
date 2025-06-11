@@ -50,6 +50,8 @@ func run() error {
 	executor := agents.NewExecutor(agent)
 
 	question := "How many users are in the database?"
+	//log question
+	fmt.Println("Question:", question)
 	answer, err := chains.Run(ctx, executor, question)
 	fmt.Println(answer)
 	return err
