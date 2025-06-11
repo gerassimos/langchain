@@ -79,6 +79,8 @@ func (c RunSqliteQuery) Name() string {
 // If the query errors the error is given in the result to give the
 // agent the ability to retry.
 func (c RunSqliteQuery) Call(ctx context.Context, input string) (string, error) {
+
+	fmt.Printf("Running SQLite query: %s\n", input)
 	if c.CallbacksHandler != nil {
 		c.CallbacksHandler.HandleToolStart(ctx, input)
 	}
@@ -90,6 +92,8 @@ func (c RunSqliteQuery) Call(ctx context.Context, input string) (string, error) 
 		}
 		return fmt.Sprintf("error from evaluator: %s", err.Error()), nil //nolint:nilerr
 	}
+	//log result
+	fmt.Printf("SQLite query result: %s\n", result)
 
 	if c.CallbacksHandler != nil {
 		c.CallbacksHandler.HandleToolEnd(ctx, result)
