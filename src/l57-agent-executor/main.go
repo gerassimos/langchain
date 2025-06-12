@@ -13,6 +13,20 @@ import (
 	"os"
 )
 
+const (
+	_customMrklSuffix = `Begin!
+	The available tables in the database are:
+	addresses
+	carts 
+	orders
+	products
+	users
+	orders_products
+
+Question: {{.input}}
+{{.agent_scratchpad}}`
+)
+
 func main() {
 	defer db.Close()
 	if err := run(); err != nil {
@@ -43,13 +57,39 @@ func run() error {
 		RunSqliteQuery{},
 	}
 
+	helperMessage := `You are an AI that has access to a SQLite database. 
+	The available tables in the database are:
+	addresses
+	carts 
+	orders
+	products
+	users
+	orders_products
+`
+	fmt.Printf("Helper message: %s\n", helperMessage)
+
+	o1 := agents.WithMaxIterations(0)
+	o2 := agents.WithPromptSuffix(_customMrklSuffix)
+
+	fmt.Printf("Options: %v %v %v", o1, o2)
+
+	//openAIOption := agents.NewOpenAIOption()
+	//o2 := openAIOption.WithSystemMessage(helperMessage)
+	//o3 := openAIOption.WithExtraMessages([]prompts.MessageFormatter{
+	//	prompts.NewHumanMessagePromptTemplate("please be strict", nil),
+	//})
+	//agent := agents.NewOpenAIFunctionsAgent(llm,
+	//	agentTools, o2, o3)
+
 	//will use input variables: "input", "agent_scratchpad"
 	agent := agents.NewOneShotAgent(llm,
 		agentTools,
-		agents.WithMaxIterations(0))
+		o1, o2)
+
 	executor := agents.NewExecutor(agent)
 
 	question := "How many users are in the database?"
+	question = "How many users have provided a shipping address?"
 	//log question
 	fmt.Println("Question:", question)
 	answer, err := chains.Run(ctx, executor, question)
