@@ -84,6 +84,9 @@ func (c RunSqliteQuery) Call(ctx context.Context, input string) (string, error) 
 	input = strings.Trim(input, "\"")
 	result, err := RunSQLiteQuery(input)
 	if err != nil {
+		// Here we are returning the error which will be propagated to the chains.Call or chains.Run
+		// meaning that chains.Call() will actually return this error
+		// An other approach would be to return the result string with the error message and nil error
 		return "", fmt.Errorf("error running RunSQLiteQuery with input \"%s\": %w", input, err)
 	}
 	//log result
