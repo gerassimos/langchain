@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-// DescribeTables Given a list of table names, returns the schema of those tables.
+// SqliteDescribeTables Given a list of table names, returns the schema of those tables.
 func SqliteDescribeTables(tableNames []string) (string, error) {
 	//log
 	fmt.Printf("SqliteDescribeTables called with tableNames: %v\n", tableNames)
