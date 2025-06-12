@@ -13,19 +13,7 @@ import (
 	"os"
 )
 
-const (
-	_customMrklSuffix = `Begin!
-	The available tables in the database are:
-	addresses
-	carts 
-	orders
-	products
-	users
-	orders_products
-
-Question: {{.input}}
-{{.agent_scratchpad}}`
-)
+const ()
 
 func main() {
 	defer db.Close()
@@ -57,16 +45,14 @@ func run() error {
 		RunSqliteQuery{},
 	}
 
-	helperMessage := `You are an AI that has access to a SQLite database. 
-	The available tables in the database are:
-	addresses
-	carts 
-	orders
-	products
-	users
-	orders_products
-`
-	fmt.Printf("Helper message: %s\n", helperMessage)
+	customMessageAboutSqlTables, err := listSQLiteTables()
+	_customMrklSuffix := "Take into account the following information about the database:\n" +
+		customMessageAboutSqlTables + "\n\n" +
+		"Begin!" + "\n\n" +
+		"Question: {{.input}}" + "\n" +
+		"{{.agent_scratchpad}}"
+
+	fmt.Printf("Helper message: %s\n", _customMrklSuffix)
 
 	o1 := agents.WithMaxIterations(0)
 	o2 := agents.WithPromptSuffix(_customMrklSuffix)
