@@ -2,37 +2,62 @@ package main
 
 import (
 	"context"
+	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/tmc/langchaingo/tools"
+	"strings"
 )
 
-// RunSQLiteQuery executes a given SQLite query and returns the results.
-func RunSQLiteQuery1(query string) (string, error) {
+// DescribeTables Given a list of table names, returns the schema of those tables.
+func SqliteDescribeTables(tableNames []string) (string, error) {
+	// Join table names into a single string for the SQL query
+	tables := "'" + strings.Join(tableNames, "', '") + "'"
+	query := fmt.Sprintf("SELECT sql FROM sqlite_master WHERE type='table' AND name IN (%s);", tables)
 
-	return "", nil
+	// Execute the query
+	rows, err := db.Query(query)
+	if err != nil {
+		return "", err
+	}
+	defer rows.Close()
+
+	// Collect the results
+	var result strings.Builder
+	for rows.Next() {
+		var schema string
+		if err := rows.Scan(&schema); err != nil {
+			return "", err
+		}
+		result.WriteString(schema + "\n")
+	}
+
+	// Check for errors during iteration
+	if err := rows.Err(); err != nil {
+		return "", err
+	}
+
+	return result.String(), nil
 }
 
-// RunSqliteQuery is a tool that can execute SQLite queries.
-type RunSqliteQuery1 struct {
+type DescribeTables struct {
 }
 
-var _ tools.Tool = RunSqliteQuery1{}
+var _ tools.Tool = DescribeTables{}
 
-// Description returns a string describing the calculator tool.
-func (c RunSqliteQuery1) Description() string {
-	return `Run a sqlite query.`
+func (c DescribeTables) Description() string {
+	return `Given a list of table names, returns the schema of those tables.`
 }
 
 // Name returns the name of the tool.
-func (c RunSqliteQuery1) Name() string {
-	return "run_sqlite_query"
+func (c DescribeTables) Name() string {
+	return "describe_tables"
 }
 
 // Call executes the SQLite query provided in the input string and returns the results.
 // If the query execution fails, it returns an error message.
 // If the query errors the error is given in the result to give the
 // agent the ability to retry.
-func (c RunSqliteQuery1) Call(ctx context.Context, input string) (string, error) {
-
-	return "", nil
+func (c DescribeTables) Call(ctx context.Context, input string) (string, error) {
+	tableNames := strings.Split(input, ",")
+	return SqliteDescribeTables(tableNames)
 }
