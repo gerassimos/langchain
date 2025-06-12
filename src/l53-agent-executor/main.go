@@ -46,7 +46,7 @@ func run() error {
 	//will use input variables: "input", "agent_scratchpad"
 	agent := agents.NewOneShotAgent(llm,
 		agentTools,
-		agents.WithMaxIterations(3))
+		agents.WithMaxIterations(0))
 	executor := agents.NewExecutor(agent)
 
 	question := "How many users are in the database?"

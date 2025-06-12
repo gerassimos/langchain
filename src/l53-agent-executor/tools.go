@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/tmc/langchaingo/callbacks"
 	"github.com/tmc/langchaingo/tools"
 	"strings"
 )
@@ -60,7 +59,6 @@ func formatResults(results [][]interface{}) string {
 
 // RunSqliteQuery is a tool that can execute SQLite queries.
 type RunSqliteQuery struct {
-	CallbacksHandler callbacks.Handler
 }
 
 var _ tools.Tool = RunSqliteQuery{}
@@ -82,25 +80,15 @@ func (c RunSqliteQuery) Name() string {
 func (c RunSqliteQuery) Call(ctx context.Context, input string) (string, error) {
 
 	fmt.Printf("Running SQLite query: %s\n", input)
-	if c.CallbacksHandler != nil {
-		c.CallbacksHandler.HandleToolStart(ctx, input)
-	}
-
+	// trim double quotes from input
+	input = strings.Trim(input, "\"")
 	result, err := RunSQLiteQuery(input)
 	if err != nil {
-		if c.CallbacksHandler != nil {
-			c.CallbacksHandler.HandleToolError(ctx, err)
-		}
-		//return fmt.Sprintf("error from run_sqlite_query: %s", err.Error()), nil //nolint:nilerr
-		// wrap the error in a more descriptive message and return it
 		return "", fmt.Errorf("error running RunSQLiteQuery with input \"%s\": %w", input, err)
 	}
 	//log result
 	fmt.Printf("SQLite query result: %s\n", result)
 
-	if c.CallbacksHandler != nil {
-		c.CallbacksHandler.HandleToolEnd(ctx, result)
-	}
 	// trim result to remove trailing newlines and tabs
 	result = strings.TrimSpace(result)
 
