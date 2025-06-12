@@ -43,6 +43,7 @@ func run() error {
 
 	agentTools := []tools.Tool{
 		RunSqliteQuery{},
+		DescribeTables{},
 	}
 
 	customMessageAboutSqlTables, err := listSQLiteTables()
@@ -51,8 +52,6 @@ func run() error {
 		"Begin!" + "\n\n" +
 		"Question: {{.input}}" + "\n" +
 		"{{.agent_scratchpad}}"
-
-	fmt.Printf("Helper message: %s\n", _customMrklSuffix)
 
 	o1 := agents.WithMaxIterations(0)
 	o2 := agents.WithPromptSuffix(_customMrklSuffix)

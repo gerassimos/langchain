@@ -10,6 +10,9 @@ import (
 
 // DescribeTables Given a list of table names, returns the schema of those tables.
 func SqliteDescribeTables(tableNames []string) (string, error) {
+	//log
+	fmt.Printf("SqliteDescribeTables called with tableNames: %v\n", tableNames)
+
 	// Join table names into a single string for the SQL query
 	tables := "'" + strings.Join(tableNames, "', '") + "'"
 	query := fmt.Sprintf("SELECT sql FROM sqlite_master WHERE type='table' AND name IN (%s);", tables)
