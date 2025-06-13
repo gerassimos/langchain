@@ -7,6 +7,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/tmc/langchaingo/agents"
 	"github.com/tmc/langchaingo/chains"
+	"github.com/tmc/langchaingo/httputil"
 	"github.com/tmc/langchaingo/llms/openai"
 	"github.com/tmc/langchaingo/prompts"
 	"github.com/tmc/langchaingo/tools"
@@ -36,7 +37,12 @@ func init() {
 }
 
 func run() error {
-	llm, err := openai.New()
+	var opts []openai.Option
+	//use a custom HTTP client to log requests and responses.
+	opts = append(opts, openai.WithHTTPClient(httputil.DebugHTTPClient))
+	// We can construct an LLMChain from a PromptTemplate and an LLM.
+	llm, err := openai.New(opts...)
+	//llm, err := openai.New()
 	if err != nil {
 		return err
 	}
