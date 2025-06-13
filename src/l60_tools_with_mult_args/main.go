@@ -8,6 +8,7 @@ import (
 	"github.com/tmc/langchaingo/agents"
 	"github.com/tmc/langchaingo/chains"
 	"github.com/tmc/langchaingo/llms/openai"
+	"github.com/tmc/langchaingo/prompts"
 	"github.com/tmc/langchaingo/tools"
 	"log"
 	"os"
@@ -70,7 +71,7 @@ func run() error {
 	agent := agents.NewOneShotAgent(llm,
 		agentTools,
 		o1, o2)
-
+	printTemplate(agent)
 	executor := agents.NewExecutor(agent)
 
 	question := "How many users are in the database?"
@@ -96,4 +97,13 @@ func runSimpleQuery() error {
 		fmt.Println(row)
 	}
 	return nil
+}
+func printTemplate(agent *agents.OneShotZeroAgent) {
+	chain := agent.Chain
+	if llmChain, ok := chain.(*chains.LLMChain); ok {
+		prompt := llmChain.Prompt
+		p := prompt.(prompts.PromptTemplate)
+		t := p.Template
+		fmt.Printf("Template:\n %s", t)
+	}
 }
