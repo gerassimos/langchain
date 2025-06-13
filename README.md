@@ -243,6 +243,8 @@ executor, err := agents.Initialize(...)
 Remember these function `descriptions` are eventually sent off to ChatGPT and right now OpenAI limits the amount of text that you can put in to a function description
 
 ## 57. Adding a Table Description Tool
+You see sometimes `ChatGPT` thinks that it just knows what's best for answering some of these questions
+and it's going to refuse to use some tools.
 
 ## 58. Being Direct with System Messages
 
