@@ -263,3 +263,15 @@ And this change allows me to take a look at the function arguments that get sent
 ## 64. Implementing a Basic Callback Handler
 
 ## 65. More Handler Implementation 3
+
+
+## 68. pdf project
+[github](https://github.com/0x-cygnet/langchain-pdf)
+
+## 92. ConversationalRetrieval Chain
+- [conversational_retrieval_qa](https://github.com/tmc/langchaingo/blob/main/chains/conversational_retrieval_qa.go)
+- [conversational_retrieval_qa_test](https://github.com/tmc/langchaingo/blob/main/chains/conversational_retrieval_qa_test.go)
+-
+
+## 93. 
+
