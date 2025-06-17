@@ -23,6 +23,21 @@ import (
 
 func main() {
 	fmt.Println("Hello, World!")
+	printMessageWithBorder("This is a message with a border!")
+	printMessageWith2Border()
+}
+
+func printMessageWithBorder(msg string) {
+	var style = lipgloss.NewStyle().
+		BorderStyle(lipgloss.NormalBorder()).
+		BorderForeground(lipgloss.Color("63"))
+
+	style = style.SetString("TEST")
+
+	fmt.Println(style.Render(msg))
+}
+
+func printMessageWith2Border() {
 	border := lipgloss.NewStyle().
 		Border(lipgloss.RoundedBorder()).
 		BorderForeground(lipgloss.Color("63")).
@@ -37,16 +52,4 @@ func main() {
 
 	box := border.Render("Hello from Go in a nice box!")
 	fmt.Println(title.Render(" INFO ") + "\n" + box)
-
-	printMessageWithBorder("This is a message with a border!")
-}
-
-func printMessageWithBorder(msg string) {
-	var style = lipgloss.NewStyle().
-		BorderStyle(lipgloss.NormalBorder()).
-		BorderForeground(lipgloss.Color("63"))
-
-	style = style.SetString("TEST")
-
-	fmt.Println(style.Render(msg))
 }
