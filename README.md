@@ -275,3 +275,17 @@ And this change allows me to take a look at the function arguments that get sent
 
 ## 93. 
 
+
+## 97. Building a Custom SQL History
+- [example](https://github.com/tmc/langchaingo/tree/main/examples/chains-conversation-memory-sqlite)
+- [code](https://github.com/tmc/langchaingo/blob/main/memory/sqlite3/sqlite3_history.go)
+-
+
+## 99. Streaming Text Generation
+- [slides](diagrams/15-chat.pdf)
+- [example](https://github.com/tmc/langchaingo/tree/main/examples/ollama-stream-example)
+- [example](https://github.com/tmc/langchaingo/tree/main/examples/openai-function-call-streaming-example)
+  The above example also make use of tools `llms.WithTools(tools)` 
+
+## 101. Experimenting with a Streaming Language Model
+ - [slides](diagrams/20-chat6.pdf)
