@@ -14,8 +14,6 @@ import (
 	"os"
 )
 
-const ()
-
 func main() {
 	defer db.Close()
 	if err := run(); err != nil {
@@ -53,6 +51,7 @@ func run() error {
 	agentTools := []tools.Tool{
 		RunSqliteQuery{},
 		DescribeTables{},
+		WriteHtmlReport{},
 	}
 
 	sqlTables, err := listSQLiteTables()
@@ -98,9 +97,15 @@ func run() error {
 		o1, o2)
 
 	executor := agents.NewExecutor(agent)
+	//conversationBuffer := memory.NewConversationBuffer()
+	//agentOption:=agents.WithMemory(conversationBuffer)
+	//executor := agents.NewExecutor(agent,agentOption)
 
 	question := "How many users are in the database?"
 	question = "How many users have provided a shipping address?"
+	question = "How many orders are there? Write the result to an html report."
+	// NOT working => question:
+	// NOT working => "Summarize the top 5 most popular products. Write the result to a report html file."
 	//log question
 	fmt.Println("Question:", question)
 	answer, err := chains.Run(ctx, executor, question)

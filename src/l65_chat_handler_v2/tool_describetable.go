@@ -31,7 +31,8 @@ func SqliteDescribeTables(tableNames []string) (string, error) {
 		if err := rows.Scan(&schema); err != nil {
 			return "", err
 		}
-		result.WriteString(schema + "\n")
+		//result.WriteString(schema + "\n")
+		result.WriteString(schema + " ")
 	}
 
 	// Check for errors during iteration
