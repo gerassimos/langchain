@@ -8,7 +8,6 @@ import (
 	"github.com/tmc/langchaingo/agents"
 	"github.com/tmc/langchaingo/chains"
 	"github.com/tmc/langchaingo/llms/openai"
-	"github.com/tmc/langchaingo/prompts"
 	"github.com/tmc/langchaingo/tools"
 	"log"
 	"os"
@@ -59,15 +58,6 @@ func run() error {
 		return fmt.Errorf("error listing SQLite tables: %w", err)
 	}
 
-	//_customMrklSuffix := "Take into account the following information about the database:\n" +
-	//	customMessageAboutSqlTables + "\n\n" +
-	//	"Begin!" + "\n\n" +
-	//	"Question: {{.input}}" + "\n" +
-	//	"{{.agent_scratchpad}}"
-	//	_defaultMrklPrefix := `Today is {{.today}}.
-	//Answer the following questions as best you can. You have access to the following tools:
-	//
-	//{{.tool_descriptions}}`
 	customMrklPrefix := "Today is {{.today}}.\n" +
 		"You are an AI that has access to a SQLite database.\n" +
 		"The database contains the following tables:\n" + sqlTables + "\n\n" +
@@ -81,59 +71,41 @@ func run() error {
 	//o2 := agents.WithPromptSuffix(_customMrklSuffix)
 	o2 := agents.WithPromptPrefix(customMrklPrefix)
 
-	//fmt.Printf("Options: %v %v %v", o1, o2)
-
-	//openAIOption := agents.NewOpenAIOption()
-	//o2 := openAIOption.WithSystemMessage(helperMessage)
-	//o3 := openAIOption.WithExtraMessages([]prompts.MessageFormatter{
-	//	prompts.NewHumanMessagePromptTemplate("please be strict", nil),
-	//})
-	//agent := agents.NewOpenAIFunctionsAgent(llm,
-	//	agentTools, o2, o3)
-
 	//will use input variables: "input", "agent_scratchpad"
 	agent := agents.NewOneShotAgent(llm,
 		agentTools,
 		o1, o2)
 
 	executor := agents.NewExecutor(agent)
-	//conversationBuffer := memory.NewConversationBuffer()
-	//agentOption:=agents.WithMemory(conversationBuffer)
-	//executor := agents.NewExecutor(agent,agentOption)
 
-	question := "How many users are in the database?"
-	question = "How many users have provided a shipping address?"
-	question = "How many orders are there? Write the result to an html report."
+	// Memory is not working. The {{.history}} input is missing in the prompt.
+	// I believe to make it work we need to create a custom prompt template that includes the history.
+	// Use of the option `agents.WithPrompt()`
+	//conversationBuffer := memory.NewConversationBuffer()
+	//agentOption := agents.WithMemory(conversationBuffer)
+	//executor := agents.NewExecutor(agent, agentOption)
+
+	//q1 := "How many users are in the database?"
+	//q2 := "How many users have provided a shipping address?"
+	//q3 := "How many orders are there? Write the result to a html report."
 	// NOT working => question:
 	// NOT working => "Summarize the top 5 most popular products. Write the result to a report html file."
 	//log question
-	fmt.Println("Question:", question)
-	answer, err := chains.Run(ctx, executor, question)
-	fmt.Println(answer)
-	return err
-}
 
-func runSimpleQuery() error {
-	// Example usage of RunSQLiteQuery
-	query := "SELECT * FROM users" // Replace with your actual query
-	results, err := RunSQLiteQuery(query)
-	if err != nil {
-		//log.Fatalf("Error running query: %v", err)
-		return fmt.Errorf("error running query: %w", err)
-	}
+	q1 := "How many users are in the database? Write the result to a html report."
+	q2 := "Same question for orders."
 
-	// Print the results
-	for _, row := range results {
-		fmt.Println(row)
+	//array of questions
+	questions := []string{q1, q2}
+
+	for _, question := range questions {
+		fmt.Println("Question:", question)
+		answer, err := chains.Run(ctx, executor, question)
+
+		if err != nil {
+			return err
+		}
+		fmt.Println(answer)
 	}
 	return nil
-}
-func printTemplate(agent *agents.OneShotZeroAgent) {
-	chain := agent.Chain
-	if llmChain, ok := chain.(*chains.LLMChain); ok {
-		prompt := llmChain.Prompt
-		p := prompt.(prompts.PromptTemplate)
-		t := p.Template
-		fmt.Printf("Template:\n %s", t)
-	}
 }

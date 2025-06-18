@@ -5,10 +5,15 @@ import (
 	"fmt"
 	"github.com/tmc/langchaingo/tools"
 	"os"
+	"time"
 )
 
 func createHTMLReport(htmlContent string) (string, error) {
-	fileName := "report.html"
+	//date format yyy-mm-dd--hh-mm-ss
+
+	dateStr := time.Now().Format("2025-06-18--15-04-05")
+
+	fileName := "report_" + dateStr + ".html"
 	file, err := os.Create(fileName)
 	if err != nil {
 		return "", fmt.Errorf("error creating HTML file: %w", err)

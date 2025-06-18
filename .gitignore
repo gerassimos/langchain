@@ -34,4 +34,4 @@ go.work.sum
 /src-python/
 /.idea/
 /diagrams.zip
-/src/l65_chat_handler_v2/report.html
+/src/l65_chat_handler_v2/report_*.html
