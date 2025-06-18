@@ -23,5 +23,5 @@ func listSQLiteTables() (string, error) {
 		tables = append(tables, tableName)
 	}
 
-	return "The available tables in the database are:\n" + strings.Join(tables, "\n"), nil
+	return strings.Join(tables, "\n"), nil
 }

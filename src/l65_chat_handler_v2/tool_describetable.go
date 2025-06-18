@@ -48,7 +48,7 @@ type DescribeTables struct {
 var _ tools.Tool = DescribeTables{}
 
 func (c DescribeTables) Description() string {
-	return `Given a list of table names, returns the schema of those tables.`
+	return `Given a string containing a comma separated list of table names, returns the schema of those tables.`
 }
 
 // Name returns the name of the tool.

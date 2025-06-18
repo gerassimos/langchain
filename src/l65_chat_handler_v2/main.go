@@ -55,17 +55,34 @@ func run() error {
 		DescribeTables{},
 	}
 
-	customMessageAboutSqlTables, err := listSQLiteTables()
-	_customMrklSuffix := "Take into account the following information about the database:\n" +
-		customMessageAboutSqlTables + "\n\n" +
-		"Begin!" + "\n\n" +
-		"Question: {{.input}}" + "\n" +
-		"{{.agent_scratchpad}}"
+	sqlTables, err := listSQLiteTables()
+	if err != nil {
+		return fmt.Errorf("error listing SQLite tables: %w", err)
+	}
+
+	//_customMrklSuffix := "Take into account the following information about the database:\n" +
+	//	customMessageAboutSqlTables + "\n\n" +
+	//	"Begin!" + "\n\n" +
+	//	"Question: {{.input}}" + "\n" +
+	//	"{{.agent_scratchpad}}"
+	//	_defaultMrklPrefix := `Today is {{.today}}.
+	//Answer the following questions as best you can. You have access to the following tools:
+	//
+	//{{.tool_descriptions}}`
+	customMrklPrefix := "Today is {{.today}}.\n" +
+		"You are an AI that has access to a SQLite database.\n" +
+		"The database contains the following tables:\n" + sqlTables + "\n\n" +
+		"Do not make any assumptions about what tables exist or what columns exist. " +
+		"Instead, use the 'describe_tables' tool\n" +
+		"Answer the following questions as best you can.\n" +
+		"You have access to the following tools:\n" +
+		"{{.tool_descriptions}}"
 
 	o1 := agents.WithMaxIterations(0)
-	o2 := agents.WithPromptSuffix(_customMrklSuffix)
+	//o2 := agents.WithPromptSuffix(_customMrklSuffix)
+	o2 := agents.WithPromptPrefix(customMrklPrefix)
 
-	fmt.Printf("Options: %v %v %v", o1, o2)
+	//fmt.Printf("Options: %v %v %v", o1, o2)
 
 	//openAIOption := agents.NewOpenAIOption()
 	//o2 := openAIOption.WithSystemMessage(helperMessage)
@@ -79,7 +96,7 @@ func run() error {
 	agent := agents.NewOneShotAgent(llm,
 		agentTools,
 		o1, o2)
-	printTemplate(agent)
+
 	executor := agents.NewExecutor(agent)
 
 	question := "How many users are in the database?"
